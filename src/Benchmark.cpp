@@ -1,5 +1,6 @@
 #include <iostream>
 #include <sstream>
+#include <climits>
 
 #include <sys/time.h>
 
@@ -23,8 +24,12 @@ void bench::Benchmark::launchBenchs(){
 
 void bench::Benchmark::bench(bench::Function& function){
     unsigned long total = 0;
+    unsigned long min = LONG_MAX;
+    unsigned long max = 0;
 
-    for(int i = 0; i < 10000; ++i){
+    unsigned long operations = 10000;
+
+    for(unsigned int i = 0; i < operations; ++i){
         timespec ts1 = {0,0};
         timespec ts2 = {0,0};
 
@@ -34,10 +39,18 @@ void bench::Benchmark::bench(bench::Function& function){
 
         unsigned long duration = (ts2.tv_sec - ts1.tv_sec) * 1000000000l + (ts2.tv_nsec - ts1.tv_nsec);
 
+        min = std::min(min, duration);
+        max = std::max(max, duration);
+
         total += duration;
     }
 
+    unsigned long avg = total / operations;
+
     function.results.total = total;
+    function.results.avg = avg;
+    function.results.min = min;
+    function.results.max = max;
 }
 
 std::string withCorrectUnit(unsigned long duration){
@@ -64,6 +77,10 @@ std::string withCorrectUnit(unsigned long duration){
 
 void bench::Benchmark::printResults(){
     for(auto& function : functions){
-        std::cout << "Function : " << function.name << " : Total=" << withCorrectUnit(function.results.total) << std::endl;
+        std::cout << "Function : " << function.name << " : " 
+            << "avg=" << withCorrectUnit(function.results.avg) 
+            << ", max=" << withCorrectUnit(function.results.max) 
+            << ", min=" << withCorrectUnit(function.results.min) 
+            << std::endl;
     }
 }

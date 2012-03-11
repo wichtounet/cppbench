@@ -6,6 +6,9 @@ namespace bench {
 
 struct Results {
     unsigned long total;
+    unsigned long max;
+    unsigned long min;
+    unsigned long avg;
 };
 
 struct Function {
