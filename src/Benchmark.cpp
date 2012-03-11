@@ -40,7 +40,7 @@ void bench::Benchmark::bench(bench::Function& function){
     function.results.total = total;
 }
 
-std::string withCorrectSuffix(unsigned long duration){
+std::string withCorrectUnit(unsigned long duration){
     std::stringstream stream;
 
     if(duration > 1000000000L){
@@ -64,6 +64,6 @@ std::string withCorrectSuffix(unsigned long duration){
 
 void bench::Benchmark::printResults(){
     for(auto& function : functions){
-        std::cout << "Function : " << function.name << " : Total=" << withCorrectSuffix(function.results.total) << std::endl;
+        std::cout << "Function : " << function.name << " : Total=" << withCorrectUnit(function.results.total) << std::endl;
     }
 }
