@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 
 #include <sys/time.h>
 
@@ -39,8 +40,30 @@ void bench::Benchmark::bench(bench::Function& function){
     function.results.total = total;
 }
 
+std::string withCorrectSuffix(unsigned long duration){
+    std::stringstream stream;
+
+    if(duration > 1000000000L){
+        double subduration = duration / 1000000000.0;
+
+        stream << subduration << "s";
+    } else if(duration > 1000000L){
+        double subduration = duration / 1000000.0;
+
+        stream << subduration << "ms";
+    } else if(duration > 1000L){
+        double subduration = duration / 1000.0;
+
+        stream << subduration << "us";
+    } else {
+        stream << duration << "ns";
+    }
+
+    return stream.str();
+}
+
 void bench::Benchmark::printResults(){
     for(auto& function : functions){
-        std::cout << "Function : " << function.name << " : Total=" << function.results.total << "ns" << std::endl;
+        std::cout << "Function : " << function.name << " : Total=" << withCorrectSuffix(function.results.total) << std::endl;
     }
 }
