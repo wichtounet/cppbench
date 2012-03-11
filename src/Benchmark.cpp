@@ -104,6 +104,8 @@ void bench::Benchmark::bench(bench::Function& function){
 }
 
 void bench::Benchmark::printResults(){
+    std::cout << "Each benchmark lasted about " << bench_duration << "s" << std::endl;
+
     for(auto& function : functions){
         std::cout << "Function : " << function.name << " : " 
             << "avg=" << withCorrectUnit(function.results.avg) 
