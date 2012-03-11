@@ -26,7 +26,7 @@ void bench::Benchmark::setBenchDuration(unsigned int seconds){
     bench_duration = seconds;
 }
 
-unsigned long getOperations(bench::Function& function, unsigned int bench_duration){
+unsigned long getOperations(std::function<void()>& function, unsigned int bench_duration){
     unsigned long total = 0;
 
     //TODO Find a way to make that faster
@@ -37,7 +37,7 @@ unsigned long getOperations(bench::Function& function, unsigned int bench_durati
         timespec ts2 = {0,0};
 
         clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &ts1);
-        function.function();
+        function();
         clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &ts2);
 
         unsigned long duration = (ts2.tv_sec - ts1.tv_sec) * 1000000000l + (ts2.tv_nsec - ts1.tv_nsec);
@@ -77,14 +77,16 @@ void bench::Benchmark::bench(bench::Function& function){
     unsigned long min = LONG_MAX;
     unsigned long max = 0;
 
-    unsigned long operations = getOperations(function, bench_duration);
+    unsigned long operations = getOperations(function.function, bench_duration);
+
+    std::function<void()> funct = function.function;
 
     for(unsigned int i = 0; i < operations; ++i){
         timespec ts1 = {0,0};
         timespec ts2 = {0,0};
 
         clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &ts1);
-        function.function();
+        funct();
         clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &ts2);
 
         unsigned long duration = (ts2.tv_sec - ts1.tv_sec) * 1000000000l + (ts2.tv_nsec - ts1.tv_nsec);
