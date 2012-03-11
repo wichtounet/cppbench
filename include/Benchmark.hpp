@@ -28,7 +28,11 @@ class Benchmark {
         void launchBenchs();
         void printResults();
 
+        void setBenchDuration(unsigned int seconds);
+
     private:
+        unsigned int bench_duration;
+        
         std::vector<Function> functions;
 
         void bench(Function& function);

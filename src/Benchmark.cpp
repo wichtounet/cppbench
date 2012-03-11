@@ -8,7 +8,7 @@
 
 bench::Function::Function(const std::string& name, std::function<void()> function) : name(name), function(function) {}
 
-bench::Benchmark::Benchmark(){
+bench::Benchmark::Benchmark() : bench_duration(10) {
     //
 }
 
@@ -22,7 +22,11 @@ void bench::Benchmark::launchBenchs(){
     }
 }
 
-unsigned long getOperations(bench::Function& function){
+void bench::Benchmark::setBenchDuration(unsigned int seconds){
+    bench_duration = seconds;
+}
+
+unsigned long getOperations(bench::Function& function, unsigned int bench_duration){
     unsigned long total = 0;
 
     //TODO Find a way to make that faster
@@ -43,7 +47,7 @@ unsigned long getOperations(bench::Function& function){
     
     unsigned long avg = total / operations;
 
-    return (10 * 1000000000L) / avg;
+    return (bench_duration * 1000000000L) / avg;
 }
 
 std::string withCorrectUnit(unsigned long duration){
@@ -73,7 +77,7 @@ void bench::Benchmark::bench(bench::Function& function){
     unsigned long min = LONG_MAX;
     unsigned long max = 0;
 
-    unsigned long operations = getOperations(function);
+    unsigned long operations = getOperations(function, bench_duration);
 
     for(unsigned int i = 0; i < operations; ++i){
         timespec ts1 = {0,0};
